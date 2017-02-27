@@ -28,15 +28,12 @@ function freeview(varargin)
 % 8) screenshot: whether or not to save a screenshot (default = false)
 %
 % NOTES
-% 
 % 1) Default parameters are used for inputs that are omitted or set to [].
-% 
 % 2) Freeview colors the gyri and sulci red and green by default unless a
 %    parameter map is loaded, in which case the curvature map is shown with
 %    a nicer looking binary grayscale. To force the binary curvature map in
 %    both cases, a dummy map is loaded and then hidden using thresholding
 %    when mapName is not defined by the user. 
-% 
 % 3) If screenshot = true, then a file named 'subjID_hemi_vw[_mapName].png'
 %    is written to your current directory and the freeview window is
 %    automatically closed. This is useful for batch processing.
@@ -50,7 +47,7 @@ function freeview(varargin)
 
 %% setup defaults
 
-% store paths to current working directory segmentation directory
+% store paths to current working directory and segmentation directory
 homeDir = pwd;
 fsDir = fullfile('/','share','kalanit','biac2','kgs','3Danat','FreesurferSegmentations');
 % check input list
@@ -61,23 +58,23 @@ end
 % set default arguments
 optargs = {'fsaverage' 'lh' 'm' [] [] 1.5 'inflated' false};
 optargs(1:numvarargs) = varargin;
-% apply defaults to undefined arguements
+% apply defaults for omitted arguements
 [subjID,hemi,vw,mapName,threshVec,zoomFactor,surfName,screenshot] = optargs{:};
 
 
-%% check inputs
+%% check inputs and apply defaults for emptpy arguements
 
 % check for subjID in segmentations directory
 if isempty(subjID); subjID = 'fsaverage'; end;
 if ~exist(fullfile(fsDir,subjID))
     error('subjID not found in FreeSurfer Segmentations directory');
 end
-% check hemi
+% check hemi setting
 if isempty(hemi); hemi = 'lh'; end;
 if sum(strcmp(hemi,{'rh' 'lh'})) ~= 1
     error('hemi must be "lh" or "rh"')
 end
-% check view
+% check view setting
 if isempty(vw); vw = 'm'; end;
 if sum(strcmp(vw,{'m' 'l' 'v' 'd' 'vm' 'dl' 'vl'})) ~= 1
     error('view does not match any predefined views (see documentation)');
@@ -101,26 +98,26 @@ elseif strcmp(hemi,'rh')
     if strcmp(vw,'vl'); az = 165; el= -50; ro = 15; end;
 end
 az = num2str(az); el = num2str(el); ro = num2str(ro);
-% check screenshot
+% create screenshot filename if necessary
 screenshot = boolean(screenshot);
 if screenshot
     ssPath = fullfile(homeDir,[subjID '_' hemi '_' vw]);
     if ~isempty(mapName); ssPath = [ssPath '_' mapName]; end
     ssPath = [ssPath '.png'];
 end
-% use dummy paramter map to force binary curvature map
+% force binary curvature map if parameter map is not loaded
 if isempty(mapName)
-    % point to dummy map in mri directory
+    % point to dummy map file in mri directory
     mapName = ['surf/' mapName];
     mapName = 'mri/aseg.mgz';
     threshVec = repmat(10e4,1,3);
 else
-    % otherwise point to map in surf directory
+    % otherwise point to parameter map in surf directory
     mapName = ['surf/' mapName];
-end
-% check for map file
-if ~exist(fullfile(fsDir,subjID,mapName)) > 0;
-    error('mapName not found in subjID surf directory');
+    % check for parameter map file
+    if ~exist(fullfile(fsDir,subjID,mapName)) > 0;
+        error('mapName not found in subjID surf directory');
+    end
 end
 % convert threshVec to formatted string
 overlay_threshold = [];
@@ -128,14 +125,15 @@ for ti = 1:length(threshVec)-1
     overlay_threshold = [overlay_threshold num2str(threshVec(ti)) ','];
 end
 overlay_threshold = [overlay_threshold num2str(threshVec(ti+1))];
-% check zoom factor
+% check zoom factor setting
 if isempty(zoomFactor); zoomFactor = 1.5; end;
 zoomFactor = num2str(zoomFactor);
-% check surface name
+% check surface name setting
 if isempty(surfName); surfName = 'inflated'; end;
 if sum(strcmp(surfName,{'inflated' 'pial' 'white'})) ~= 1
     error('surfName must be "inflated", "pial", or "white"');
 end
+
 
 %% construct freeivew unix command
 
