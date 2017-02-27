@@ -108,12 +108,15 @@ if screenshot
     if ~isempty(mapName); ssPath = [ssPath '_' mapName]; end
     ssPath = [ssPath '.png'];
 end
-% load dummy paramter map to force binary grayscale curvature settings
+% use dummy paramter map to force binary curvature map
 if isempty(mapName)
+    % point to dummy map in mri directory
+    mapName = ['surf/' mapName];
     mapName = 'mri/aseg.mgz';
     threshVec = repmat(10e4,1,3);
 else
-    mapName = ['surf/' mapName]; % otherwise point to map in surf directory
+    % otherwise point to map in surf directory
+    mapName = ['surf/' mapName];
 end
 % check for map file
 if ~exist(fullfile(fsDir,subjID,mapName)) > 0;
