@@ -15,6 +15,9 @@ function freeview(varargin)
 %      'l' = lateral
 %      'v' = ventral
 %      'd' = dorsal
+%      'vm' = ventromedial
+%      'dl' = dorsolateral
+%      'vl' = ventrolateral
 % 4) mapName: name of parameter map in subject's surf directory)
 % 5) threshVec: overlay thresholding parameters ([low mid high])
 %      low = lower bound of transparent portion of colormap
@@ -76,7 +79,7 @@ if sum(strcmp(hemi,{'rh' 'lh'})) ~= 1
 end
 % check view
 if isempty(vw); vw = 'm'; end;
-if sum(strcmp(vw,{'m' 'l' 'v' 'd'})) ~= 1
+if sum(strcmp(vw,{'m' 'l' 'v' 'd' 'vm' 'dl' 'vl'})) ~= 1
     error('view does not match any predefined views (see documentation)');
 end
 % assign camera angles depending on view and hemisphere
@@ -85,11 +88,17 @@ if strcmp(hemi,'lh')
     if strcmp(vw,'l'); az = 0; el= 0; ro = 0; end;
     if strcmp(vw,'v'); az = 0; el= -85; ro = 0; end;
     if strcmp(vw,'d'); az = 180; el= 100; ro = 0; end;
+    if strcmp(vw,'vm'); az = 160; el= -50; ro = 10; end;
+    if strcmp(vw,'dl'); az = 50; el= 30; ro = 5; end;
+    if strcmp(vw,'vl'); az = 15; el = -55; ro = -15; end;
 elseif strcmp(hemi,'rh')
     if strcmp(vw,'m'); az = 0; el= 0; ro = 0; end;
     if strcmp(vw,'l'); az = 180; el= 0; ro = 0; end;
     if strcmp(vw,'v'); az = 180; el = -85; ro = 0; end;
     if strcmp(vw,'d'); az = 0; el = 100; ro = 0; end;
+    if strcmp(vw,'vm'); az = 20; el= -50; ro = -10; end;
+    if strcmp(vw,'dl'); az = 130; el= 30; ro = -5; end;
+    if strcmp(vw,'vl'); az = 165; el= -50; ro = 15; end;
 end
 az = num2str(az); el = num2str(el); ro = num2str(ro);
 % check screenshot
