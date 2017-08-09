@@ -1,7 +1,7 @@
 function freeview(varargin)
 % MATLAB code for scripting cortical surface visualizations using the
 % freeview package included with FreeSurfer. The function is called with 
-% eight optional arguements ordered as follows: 
+% eight optional arguments ordered as follows: 
 % 
 % freeview(subjID,hemi,vw,mapName,threshVec,zoomFactor,surfName,screenshot)
 % 
