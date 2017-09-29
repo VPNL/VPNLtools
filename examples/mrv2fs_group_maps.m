@@ -13,7 +13,7 @@ for ss = 1:length(fs_ids)
     for mm = 1:length(map_names)
         map_name = map_names{mm}; % name of a mrVista parameter map file
         map_path = fullfile(data_dir, session, 'Gray', data_type, [map_name '.mat']);
-        out_paths{ss, mm} = mv2fs_parameter_map(map_path, fs_id, 1);
+        out_paths{ss, mm} = mrv2fs_parameter_map(map_path, fs_id, 1);
     end
 end
 

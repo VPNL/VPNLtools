@@ -1,4 +1,4 @@
-function out_paths = mv2fs_parameter_map(map_path, fs_id, cba_flag)
+function out_paths = mrv2fs_parameter_map(map_path, fs_id, cba_flag)
 % Transforms a mrVista paramter map into FreeSurfer-compatible .mgh files.
 %
 % Inputs

@@ -1,4 +1,4 @@
-function mv2fs_reinstall_segmentation(wm_path, fs_id)
+function mrv2fs_reinstall_segmentation(wm_path, fs_id)
 % Reinstalls Freesurfer segmentation using edited mrVista class file.
 %
 % Inputs
