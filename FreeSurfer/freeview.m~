@@ -32,13 +32,15 @@ function freeview(varargin)
 %    a nicer looking binary grayscale. To force the binary curvature map in
 %    both cases, a dummy map is loaded and then hidden using thresholding
 %    when map_name is not defined by the user. 
-% 3) If screenshot = true, then a file named 'subj_hemi_vw_[map_name].png'
+% 3) If screenshot = true, then a file named 'subj_hemi_vw_map_name.png'
 %    is written to your current directory and the freeview window is
 %    automatically closed. This is useful for batch processing.
 % 
-% Exapmle: 
+% Usage: 
 % freeview(subj, hemi, vw, map_name, thresh, zoom, surf, screenshot)
-% freeview('fsaverage', 'rh', 'v', [], [], 2.5, 'inflated', false)
+%
+% Default settings:
+% freeview('fsaverage', 'lh', 'm', [], [], 1.5, 'inflated', false)
 % 
 % AS 2/2017
 
@@ -128,7 +130,7 @@ else
         error('map_name not found in subj surf directory');
     end
 end
-% convert threshVec to formatted string
+% convert thresh vect to formatted string
 ot = [];
 for ti = 1:length(thresh) - 1
     ot = [ot num2str(thresh(ti)) ','];

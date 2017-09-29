@@ -1,16 +1,12 @@
 function pth = RAID
-% For Kalanit lab files:
+% Returns the path for the RAID partition on local computer.
 %
-% This returns the path for Kalanit's RAID partition on the local computer.
-%
-% 09/16/03 ras.
+% 9/17 AS
 
-% sneaky alternate approach:
-% if you're calling this file, then it must be somewhere in your path. This
-% file is only saved on the RAID (generally in RAID/dataTools), so we know
-% the RAID is the parent directory to wherever this file is. Simple! And
-% uses wacky recursion. Yay. -ras
-pth = fileparts(fileparts(which('RAID')));
+pth = which('RAID');
+for ii = 1:5
+    pth = fileparts(pth);
+end
 
-return
+end
 

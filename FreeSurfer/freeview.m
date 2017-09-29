@@ -16,7 +16,7 @@ function freeview(varargin)
 %      'vm' = ventromedial
 %      'dl' = dorsolateral
 %      'vl' = ventrolateral
-% 4) map_name: name of parameter map in subject's surf directory
+% 4) map_name: name of parameter map in subject's surf directory (.mgh)
 % 5) thresh: overlay thresholding parameters ([low mid high])
 %      low = lower bound of transparent portion of colormap
 %      mid = lower bound of opaque portion of colormap
@@ -32,13 +32,13 @@ function freeview(varargin)
 %    a nicer looking binary grayscale. To force the binary curvature map in
 %    both cases, a dummy map is loaded and then hidden using thresholding
 %    when map_name is not defined by the user. 
-% 3) If screenshot = true, then a file named 'subj_hemi_vw_[map_name].png'
+% 3) If screenshot = true, then a file named 'subj_hemi_vw_map_name.png'
 %    is written to your current directory and the freeview window is
 %    automatically closed. This is useful for batch processing.
 % 
-% Exapmle: 
+% Usage with default settings: 
 % freeview(subj, hemi, vw, map_name, thresh, zoom, surf, screenshot)
-% freeview('fsaverage', 'rh', 'v', [], [], 2.5, 'inflated', false)
+% freeview('fsaverage', 'lh', 'm', [], [], 1.5, 'inflated', false)
 % 
 % AS 2/2017
 
@@ -56,22 +56,20 @@ optargs(1:numvarargs) = varargin;
 
 %% check inputs and apply defaults for emptpy arguements
 
-% check for subjID in segmentations directory
+% check for subj in FreesurferSegmentations directory
 if isempty(subj); subj = 'fsaverage'; end;
-if ~exist(fullfile(fs_dir, subj))
-    error('subj not found in FreeSurfer Segmentations directory');
-end
+if ~exist(fullfile(fs_dir, subj)); error('subj not found'); end
 % check hemi setting
 if isempty(hemi); hemi = 'lh'; end;
 if sum(strcmp(hemi, {'rh' 'lh'})) ~= 1
     error('hemi must be "lh" or "rh"')
 end
-% check view setting
+% check vw setting
 if isempty(vw); vw = 'm'; end;
 if sum(strcmp(vw, {'m' 'l' 'v' 'd' 'vm' 'dl' 'vl'})) ~= 1
     error('vw does not match any predefined views');
 end
-% assign camera angles depending on view and hemisphere
+% assign camera angles depending on vw and hemi
 if strcmp(hemi, 'lh')
     switch vw
         case 'm'
@@ -128,7 +126,7 @@ else
         error('map_name not found in subj surf directory');
     end
 end
-% convert threshVec to formatted string
+% convert thresh vector to formatted string
 ot = [];
 for ti = 1:length(thresh) - 1
     ot = [ot num2str(thresh(ti)) ','];
