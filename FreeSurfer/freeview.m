@@ -58,7 +58,7 @@ optargs(1:numvarargs) = varargin;
 
 % check for subj in FreesurferSegmentations directory
 if isempty(subj); subj = 'fsaverage'; end;
-if ~exist(fullfile(fs_dir, subj)); error('subj not found'); end
+if ~exist(fullfile(fs_dir, subj), 'dir') > 0; error('subj not found'); end
 % check hemi setting
 if isempty(hemi); hemi = 'lh'; end;
 if sum(strcmp(hemi, {'rh' 'lh'})) ~= 1
