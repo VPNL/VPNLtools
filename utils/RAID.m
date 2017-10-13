@@ -1,7 +1,9 @@
 function raid_path = RAID(varargin)
-% Returns the path for the base RAID partition on local computer (five 
-% directories above location where RAID.m function is stored/mounted. This 
-% assumes that the RAID.m function is in your path and located at:
+% Returns the path for the base RAID partition on local computer when 
+% passed with no inpute arguments (five directories above location where 
+% RAID.m function is stored/mounted). Function can be called with variable
+% number of inputs specifying a series of subdirectories to addend to path.
+% This function assumes that the RAID.m is in your path and stored at:
 %   /[RAID partition]/projects/GitHub/VPNLtools/utils/
 % 
 % INPUTS (optional)
