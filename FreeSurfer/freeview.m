@@ -17,12 +17,12 @@ function freeview(varargin)
 %      'dl' = dorsolateral
 %      'vl' = ventrolateral
 % 4) map_name: name of parameter map in subject's surf directory (.mgh)
-% 5) thresh: overlay thresholding parameters ([low mid high])
+% 5) nsmooth: number of smoothing iterations for map (default = 1)
+% 6) thresh: overlay thresholding parameters ([low mid high])
 %      low = lower bound of transparent portion of colormap
 %      mid = lower bound of opaque portion of colormap
 %      high = upper limit of opaque portion of colormap
-% 6) zoom: scale factor for camera zoom (default = 1.5)
-% 7) surf: FreeSurfer surface name (default = 'inflated')
+% 7) zoom: scale factor for camera zoom (default = 1.5)
 % 8) screenshot: whether or not to save a screenshot (default = false)
 %
 % NOTES
@@ -37,8 +37,8 @@ function freeview(varargin)
 %    automatically closed. This is useful for batch processing.
 % 
 % Usage with default settings: 
-% freeview(subj, hemi, vw, map_name, thresh, zoom, surf, screenshot)
-% freeview('fsaverage', 'lh', 'm', [], [], 1.5, 'inflated', false)
+% freeview(subj, hemi, vw, map_name, nsmooth, thresh, zoom, screenshot)
+% freeview('fsaverage', 'lh', 'm', [], 1, [], 1.5, false)
 % 
 % AS 2/2017
 
@@ -52,7 +52,7 @@ numvarargs = length(varargin);
 if numvarargs > 8; error('Too many input arguements'); end
 optargs = {'fsaverage' 'lh' 'm' [] [] 1.5 'inflated' false};
 optargs(1:numvarargs) = varargin;
-[subj, hemi, vw, map_name, thresh, zoom, surf, screenshot] = optargs{:};
+[subj, hemi, vw, map_name, nsmooth, thresh, zoom, screenshot] = optargs{:};
 
 %% check inputs and apply defaults for emptpy arguements
 
@@ -110,17 +110,16 @@ az = num2str(az); el = num2str(el); ro = num2str(ro);
 screenshot = boolean(screenshot);
 if screenshot
     spath = fullfile(cwd, [subj '_' hemi '_' vw]);
-    if ~isempty(map_name); spath = [spath '_' map_name]; end
+    if ~isempty(map_name); spath = [spath '_' map_name(1:end - 4)]; end
     spath = [spath '.png'];
 end
 % force binary curvature map if parameter map is not loaded
 if isempty(map_name)
     % point to dummy map file in mri directory
-    map_name = 'mri/aseg.mgz';
-    thresh = repmat(10e4, 1, 3);
+    map_name = 'mri/aseg.mgz'; thresh = repmat(10e4, 1, 3); dummy_map = 1;
 else
     % otherwise point to parameter map in surf directory
-    map_name = ['surf/' map_name];
+    map_name = ['surf/' map_name]; dummy_map = 0;
     % check for parameter map file
     if ~exist(fullfile(fs_dir, subj, map_name), 'file') > 0
         error('map_name not found in subj surf directory');
@@ -134,26 +133,36 @@ end
 ot = [ot num2str(thresh(ti + 1))];
 % check zoom factor setting
 if isempty(zoom); zoom = 1.5; end; zoom = num2str(zoom);
-% check surface name setting
-if isempty(surf); surf = 'inflated'; end;
-if sum(strcmp(surf, {'inflated' 'pial' 'white'})) ~= 1
-    error('surf must be "inflated", "pial", or "white"');
+% check smoothing
+if isempty(nsmooth); nsmooth = 1; end;
+if nsmooth < 0
+    error('smoothing cannot be negative');
 end
-
+surf = 'inflated';
 
 %% construct freeivew unix command
 cmd = ['freeview -f surf/' hemi '.' surf];
-if ~isempty(map_name); cmd = [cmd ':overlay=' map_name]; end
-if ~isempty(map_name); cmd = [cmd ':overlay_method=piecewise']; end
+if dummy_map == 0 && nsmooth > 0
+    [~, ustr] = system('whoami'); ustr = ustr(1:end - 1);
+    cmd = [cmd ':overlay=tmp_smooth_' ustr '.mgh:overlay_method=piecewise'];
+else
+    cmd = [cmd ':overlay=' map_name];
+end
 if ~isempty(ot); cmd = [cmd ':overlay_threshold=' ot]; end
 cmd = [cmd ':edgethickness=0' ':color=150,150,150' ...
     ' -cam Zoom ' zoom ' Azimuth ' az ' Elevation ' el ' Roll ' ro];
 if screenshot; cmd = [cmd ' --screenshot ' spath]; end
 
-% move to subject's FreeSurfer segmentation directory and execute command
-cd(fullfile(RAID, '3Danat', 'FreesurferSegmentations', subj)); unix(cmd);
-
-% move back to starting directory
+%% make a smoothed version of map and open in freeview
+cd(fullfile(RAID, '3Danat', 'FreesurferSegmentations', subj));
+if dummy_map == 0
+    if nsmooth > 0
+        system(['mri_surf2surf --nsmooth 1 --hemi ' hemi ...
+            ' --srcsubject ' subj ' --srcsurfval ' map_name ...
+            ' --trgsubject ' subj ' --trgsurfval tmp_smooth_' ustr '.mgh']);
+    end
+end
+system(cmd);
 cd(cwd);
 
 end
