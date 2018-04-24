@@ -1,4 +1,4 @@
-function freeview(varargin)
+function fs_load_freeview(varargin)
 % MATLAB code for scripting cortical surface visualizations using the
 % freeview package included with FreeSurfer. The function is called with 
 % eight optional arguments ordered as follows: 
@@ -37,8 +37,8 @@ function freeview(varargin)
 %    automatically closed. This is useful for batch processing.
 % 
 % Usage with default settings: 
-% freeview(subj, hemi, vw, map_name, nsmooth, thresh, zoom, screenshot)
-% freeview('fsaverage', 'lh', 'm', [], 1, [], 1.5, false)
+% fs_load_freeview(subj, hemi, vw, map_name, nsmooth, thresh, zoom, screenshot)
+% fs_load_freeview('fsaverage', 'lh', 'm', [], 1, [], 1.5, false)
 % 
 % AS 2/2017
 
