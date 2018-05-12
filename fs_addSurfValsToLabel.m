@@ -1,5 +1,5 @@
 
-function fs_addmgz2label(fs_path, results_path, hemis, subj_dirs, templates, labels)
+function fs_addSurfValsToLabel(fs_path, results_path, hemis, subj_dirs, templates, labels)
 % this function takes an mgz overlay/parameter map file and extracts the
 % values for all the vertices in specified label files
 %
@@ -22,6 +22,8 @@ function fs_addmgz2label(fs_path, results_path, hemis, subj_dirs, templates, lab
 % number, columns 2-4 are xyz coordinates and column 5 is the extract
 % values from the overlay for each vertex
 %
+%
+%   MR & DF May 2018
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Example Input: 

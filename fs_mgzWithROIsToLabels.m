@@ -1,6 +1,6 @@
-function mgz2label(mgzfile,hemisphere,areaID,areanames,inputdir,outputdir,subjectname,surfacetype)
+function fs_mgzWithROIsToLabels(mgzfile,hemisphere,areaID,areanames,inputdir,outputdir,subjectname,surfacetype)
 % mgz2label(mgzfile,hemisphere,areaID,areanames,inputdir,outputdir,subjectname,surfacetype)
-% this function converts mgz files to individual label files. both are
+% this function converts mgz files that contain multiple ROIs (e.g. the Kastner atlas) to individual label files. both are
 % freesurfer file types
 %
 % INPUT:
