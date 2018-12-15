@@ -1,4 +1,4 @@
-function  MPM_output = createMaximumProbabilityMap(labelnames,hem,outname,surfacename,thresh,labelPath,surfacePath,nrNeighborsSmoothing)
+function  MPM_output = fs_createMaximumProbabilityMap(labelnames,hem,outname,surfacename,thresh,labelPath,surfacePath,nrNeighborsSmoothing)
 %
 % This function creates an MPM from the freesurfer probabilistic labels for
 % each of the labels that are entered as input to the function.
